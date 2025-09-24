@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: guaso-frontend
+    env: node
+    buildCommand: pnpm install && pnpm run build
+    startCommand: pnpm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+    healthCheckPath: /
