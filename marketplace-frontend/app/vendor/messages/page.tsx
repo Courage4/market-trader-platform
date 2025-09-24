@@ -1,15 +1,15 @@
 "use client"
 
 import { useState } from "react"
-import { Navigation } from "@/components/navigation"
+import DashboardLayout from "@/components/dashboard-layout"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { useToast } from "@/hooks/use-toast"
-import { MessageCircle, Send, Search, Filter, Users, Clock } from "lucide-react"
+import { MessageCircle, Send, Search, Filter, Users, Clock, Mail, Reply, Check, X, AlertCircle } from "lucide-react"
 
 export default function VendorMessages() {
   const [searchTerm, setSearchTerm] = useState("")
@@ -30,6 +30,7 @@ export default function VendorMessages() {
       unread: true,
       productId: 1,
       productName: "Fresh Tomatoes",
+      type: "inquiry"
     },
     {
       id: 2,
@@ -42,6 +43,7 @@ export default function VendorMessages() {
       unread: false,
       productId: 2,
       productName: "Organic Carrots",
+      type: "delivery"
     },
     {
       id: 3,
@@ -54,6 +56,7 @@ export default function VendorMessages() {
       unread: false,
       productId: 3,
       productName: "Green Lettuce",
+      type: "feedback"
     },
     {
       id: 4,
@@ -66,6 +69,7 @@ export default function VendorMessages() {
       unread: false,
       productId: 1,
       productName: "Fresh Tomatoes",
+      type: "bulk"
     },
     {
       id: 5,
@@ -78,6 +82,20 @@ export default function VendorMessages() {
       unread: false,
       productId: 2,
       productName: "Organic Carrots",
+      type: "quality"
+    },
+    {
+      id: 6,
+      buyer: "David Osei",
+      buyerEmail: "david@example.com",
+      subject: "Partnership Inquiry",
+      message: "Hi! I run a restaurant chain and would like to discuss a long-term supply partnership with your farm.",
+      time: "4 days ago",
+      date: "2024-01-16",
+      unread: false,
+      productId: 4,
+      productName: "Sweet Red Apples",
+      type: "partnership"
     },
   ]
 
@@ -93,6 +111,37 @@ export default function VendorMessages() {
   const handleReplyToMessage = (message: any) => {
     setSelectedMessage(message)
     setIsReplyDialogOpen(true)
+  }
+
+  const handleMarkAsRead = (messageId: number) => {
+    toast({
+      title: "Message marked as read",
+      description: "Message has been marked as read",
+    })
+  }
+
+  const getMessageTypeIcon = (type: string) => {
+    switch (type) {
+      case 'inquiry': return <MessageCircle className="h-4 w-4" />
+      case 'delivery': return <Send className="h-4 w-4" />
+      case 'feedback': return <Check className="h-4 w-4" />
+      case 'bulk': return <Users className="h-4 w-4" />
+      case 'quality': return <AlertCircle className="h-4 w-4" />
+      case 'partnership': return <Users className="h-4 w-4" />
+      default: return <MessageCircle className="h-4 w-4" />
+    }
+  }
+
+  const getMessageTypeColor = (type: string) => {
+    switch (type) {
+      case 'inquiry': return 'bg-blue-100 text-blue-700'
+      case 'delivery': return 'bg-green-100 text-green-700'
+      case 'feedback': return 'bg-emerald-100 text-emerald-700'
+      case 'bulk': return 'bg-orange-100 text-orange-700'
+      case 'quality': return 'bg-purple-100 text-purple-700'
+      case 'partnership': return 'bg-cyan-100 text-cyan-700'
+      default: return 'bg-gray-100 text-gray-700'
+    }
   }
 
   const handleSendReply = async () => {
@@ -127,150 +176,194 @@ export default function VendorMessages() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
-
-      <div className="container py-8">
+    <DashboardLayout>
+      <div className="space-y-8">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold flex items-center gap-3">
-              <MessageCircle className="h-8 w-8 text-primary" />
-              Message Center
-            </h1>
-            <p className="text-muted-foreground mt-2">
-              Manage conversations with your customers
-              {unreadCount > 0 && (
-                <Badge variant="secondary" className="ml-2">
-                  {unreadCount} unread
-                </Badge>
-              )}
-            </p>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
+          <div className="flex items-center gap-3 mb-4">
+            <MessageCircle className="h-8 w-8 text-orange-500" />
+            <div>
+              <h1 className="text-4xl font-bold text-gradient">Message Center</h1>
+              <p className="text-lg text-gray-600 mt-2">
+                Manage conversations with your customers
+                {unreadCount > 0 && (
+                  <Badge className="badge-secondary ml-3">
+                    {unreadCount} unread
+                  </Badge>
+                )}
+              </p>
+            </div>
           </div>
         </div>
 
         {/* Search and Filters */}
-        <Card className="mb-6">
-          <CardContent className="p-4">
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+          <div className="flex flex-col lg:flex-row gap-6">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-orange-500" />
                 <Input
-                  placeholder="Search messages..."
+                  placeholder="Search messages, customers, subjects..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  className="pl-12 h-14 bg-orange-50/50 border-orange-200 rounded-xl text-gray-800 placeholder:text-gray-500 focus:border-orange-500 focus:ring-orange-500/20 transition-all duration-300"
                 />
               </div>
-              <Button variant="outline">
+            </div>
+            <div className="flex gap-3">
+              <Button className="h-14 px-6 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5">
                 <Filter className="mr-2 h-4 w-4" />
                 Filter
               </Button>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Messages List */}
-        <div className="space-y-4">
-          {filteredMessages.length === 0 ? (
-            <Card>
-              <CardContent className="p-8 text-center">
-                <MessageCircle className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">No messages found</h3>
-                <p className="text-muted-foreground">
-                  {searchTerm ? "Try adjusting your search terms" : "You don't have any messages yet"}
-                </p>
-              </CardContent>
-            </Card>
-          ) : (
-            filteredMessages.map((message) => (
+        {filteredMessages.length === 0 ? (
+          <Card className="card">
+            <CardContent className="py-16 text-center">
+              <MessageCircle className="h-16 w-16 mx-auto text-gray-300 mb-6" />
+              <h3 className="text-2xl font-semibold text-gray-900 mb-3">No messages found</h3>
+              <p className="text-gray-600 max-w-md mx-auto">
+                {searchTerm ? "Try adjusting your search terms" : "You don't have any messages yet"}
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid grid-cols-1 gap-6">
+            {filteredMessages.map((message) => (
               <Card
                 key={message.id}
-                className={`cursor-pointer transition-all hover:shadow-md ${message.unread ? "border-primary/50 bg-primary/5" : ""}`}
+                className={`card-interactive ${message.unread ? "border-orange-200 bg-orange-50/30" : ""}`}
               >
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                        <Users className="h-5 w-5 text-primary" />
+                <CardContent className="p-8">
+                  <div className="flex items-start justify-between mb-6">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
+                        <Users className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold">{message.buyer}</h3>
+                        <div className="flex items-center gap-3 mb-2">
+                          <h3 className="text-lg font-bold text-gray-900">{message.buyer}</h3>
                           {message.unread && (
-                            <Badge variant="default" className="text-xs">
+                            <Badge className="badge-secondary">
                               New
                             </Badge>
                           )}
+                          <Badge className={`badge-outline ${getMessageTypeColor(message.type)}`}>
+                            {getMessageTypeIcon(message.type)}
+                            <span className="ml-1 capitalize">{message.type}</span>
+                          </Badge>
                         </div>
-                        <p className="text-sm text-muted-foreground">{message.buyerEmail}</p>
+                        <p className="text-sm text-gray-600 flex items-center gap-2">
+                          <Mail className="h-4 w-4" />
+                          {message.buyerEmail}
+                        </p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="flex items-center gap-1 text-xs text-muted-foreground mb-1">
-                        <Clock className="h-3 w-3" />
+                      <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
+                        <Clock className="h-4 w-4" />
                         {message.time}
                       </div>
-                      <Badge variant="outline" className="text-xs">
+                      <Badge className="badge-outline">
                         {message.productName}
                       </Badge>
                     </div>
                   </div>
 
-                  <div className="mb-4">
-                    <h4 className="font-medium mb-2">{message.subject}</h4>
-                    <p className="text-muted-foreground">{message.message}</p>
+                  <div className="mb-6">
+                    <h4 className="text-lg font-semibold text-gray-900 mb-3">{message.subject}</h4>
+                    <p className="text-gray-700 leading-relaxed">{message.message}</p>
                   </div>
 
-                  <div className="flex gap-2">
-                    <Button size="sm" onClick={() => handleReplyToMessage(message)}>
-                      <Send className="mr-2 h-3 w-3" />
+                  <div className="flex gap-3">
+                    <Button 
+                      onClick={() => handleReplyToMessage(message)}
+                      className="btn btn-primary flex items-center gap-2"
+                    >
+                      <Reply className="h-4 w-4" />
                       Reply
                     </Button>
-                    <Button size="sm" variant="outline">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => handleMarkAsRead(message.id)}
+                      className="btn btn-outline flex items-center gap-2"
+                    >
+                      <Check className="h-4 w-4" />
                       Mark as Read
                     </Button>
                   </div>
                 </CardContent>
               </Card>
-            ))
-          )}
-        </div>
+            ))}
+          </div>
+        )}
 
         {/* Reply Dialog */}
         <Dialog open={isReplyDialogOpen} onOpenChange={setIsReplyDialogOpen}>
-          <DialogContent className="sm:max-w-lg">
+          <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Reply to {selectedMessage?.buyer}</DialogTitle>
-              <DialogDescription>Re: {selectedMessage?.subject}</DialogDescription>
+              <DialogTitle className="flex items-center gap-3 text-xl">
+                <Reply className="h-6 w-6 text-orange-500" />
+                Reply to {selectedMessage?.buyer}
+              </DialogTitle>
+              <DialogDescription className="text-gray-600">
+                Re: {selectedMessage?.subject}
+              </DialogDescription>
             </DialogHeader>
-            <div className="space-y-4">
-              <div className="p-4 bg-muted/50 rounded-lg">
-                <p className="text-sm font-medium mb-1">Original Message:</p>
-                <p className="text-sm text-muted-foreground">"{selectedMessage?.message}"</p>
+            
+            <div className="space-y-6">
+              {/* Original Message */}
+              <div className="bg-orange-50 rounded-xl p-6 border border-orange-200">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                    <MessageCircle className="h-4 w-4 text-orange-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">Original Message</p>
+                    <p className="text-xs text-gray-600">From {selectedMessage?.buyer}</p>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-700 italic">"{selectedMessage?.message}"</p>
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Your Reply</label>
-                <Textarea
-                  placeholder="Type your reply here..."
-                  value={replyText}
-                  onChange={(e) => setReplyText(e.target.value)}
-                  rows={4}
-                />
-              </div>
-              <div className="flex gap-2">
-                <Button onClick={handleSendReply} className="flex-1">
-                  <Send className="mr-2 h-4 w-4" />
-                  Send Reply
-                </Button>
-                <Button variant="outline" onClick={() => setIsReplyDialogOpen(false)}>
-                  Cancel
-                </Button>
+
+              {/* Reply Form */}
+              <div className="space-y-4">
+                <div>
+                  <label className="form-label mb-2 block">Your Reply</label>
+                  <Textarea
+                    placeholder="Type your reply here..."
+                    value={replyText}
+                    onChange={(e) => setReplyText(e.target.value)}
+                    rows={6}
+                    className="form-textarea"
+                  />
+                </div>
               </div>
             </div>
+
+            <DialogFooter className="gap-3">
+              <Button 
+                variant="outline" 
+                onClick={() => setIsReplyDialogOpen(false)}
+                className="btn btn-outline"
+              >
+                <X className="mr-2 h-4 w-4" />
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleSendReply} 
+                className="btn btn-primary flex items-center gap-2"
+              >
+                <Send className="h-4 w-4" />
+                Send Reply
+              </Button>
+            </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
-    </div>
+    </DashboardLayout>
   )
 }

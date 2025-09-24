@@ -39,15 +39,25 @@ export function useAuth() {
 function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
     // Check for stored user session
-    const storedUser = localStorage.getItem("user")
-    if (storedUser) {
-      setUser(JSON.parse(storedUser))
+    try {
+      const storedUser = localStorage.getItem("user")
+      if (storedUser) {
+        setUser(JSON.parse(storedUser))
+      }
+    } catch (error) {
+      console.error('Error loading user from localStorage:', error)
     }
     setIsLoading(false)
   }, [])
+
+  if (!mounted) {
+    return <>{children}</>
+  }
 
   const login = async (email: string, password: string, role: string, adminKey?: string) => {
     setIsLoading(true)
@@ -117,7 +127,13 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+    <ThemeProvider 
+      attribute="class" 
+      defaultTheme="light" 
+      enableSystem={false} 
+      disableTransitionOnChange
+      forcedTheme="light"
+    >
       <AuthProvider>{children}</AuthProvider>
     </ThemeProvider>
   )

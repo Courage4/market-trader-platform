@@ -1,15 +1,13 @@
 "use client"
 
-import { Navigation } from "@/components/navigation"
+import DashboardLayout from "@/components/dashboard-layout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { useAuth } from "@/components/providers"
 import { Users, Store, Package, AlertTriangle, TrendingUp, Eye, MessageCircle, Shield, Activity } from "lucide-react"
 
 export default function AdminDashboard() {
-  const { user } = useAuth()
 
   const stats = [
     {
@@ -144,10 +142,8 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
-
-      <div className="container py-8">
+    <DashboardLayout>
+      <div className="space-y-8">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold">Admin Dashboard</h1>
@@ -310,6 +306,6 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </DashboardLayout>
   )
 }

@@ -1,9 +1,9 @@
 "use client"
 import { useParams, useRouter } from "next/navigation"
-import { Navigation } from "@/components/navigation"
+import DashboardLayout from "@/components/dashboard-layout"
 import { PromotionAnalytics } from "@/components/promotion-analytics"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, BarChart3 } from "lucide-react"
 
 export default function PromotionAnalyticsPage() {
   const params = useParams()
@@ -20,15 +20,28 @@ export default function PromotionAnalyticsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
-
-      <div className="container py-8">
-        <div className="flex items-center gap-4 mb-6">
-          <Button variant="outline" size="sm" onClick={() => router.back()}>
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Promotions
-          </Button>
+    <DashboardLayout>
+      <div className="space-y-8">
+        {/* Header */}
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center">
+          <div>
+            <div className="flex items-center gap-3 mb-4">
+              <Button onClick={() => router.back()} className="btn btn-ghost btn-icon">
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+              <BarChart3 className="h-8 w-8 text-emerald-500" />
+              <h1 className="text-4xl font-bold text-gradient">Promotion Analytics</h1>
+            </div>
+            <p className="text-lg text-gray-600 max-w-2xl">
+              Track your promotion performance and optimize your marketing strategy
+            </p>
+          </div>
+          <div className="flex gap-4 mt-4 lg:mt-0">
+            <Button onClick={() => router.back()} className="btn btn-outline">
+              <ArrowLeft className="mr-2 h-5 w-5" />
+              Back to Promotions
+            </Button>
+          </div>
         </div>
 
         <PromotionAnalytics
@@ -39,6 +52,6 @@ export default function PromotionAnalyticsPage() {
           endDate={promotionData.endDate}
         />
       </div>
-    </div>
+    </DashboardLayout>
   )
 }

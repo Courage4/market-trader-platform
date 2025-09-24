@@ -1,16 +1,16 @@
 "use client"
 
 import { useState } from "react"
-import { Navigation } from "@/components/navigation"
+import DashboardLayout from "@/components/dashboard-layout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { useToast } from "@/hooks/use-toast"
 import { PROMOTION_PLANS, type PromotionPlan, type ProductPromotion } from "@/lib/promotion-types"
-import { TrendingUp, Star, Clock, DollarSign, Eye, Zap, Calendar, CheckCircle, Plus, CreditCard } from "lucide-react"
+import { TrendingUp, Star, Clock, DollarSign, Eye, Zap, Calendar, CheckCircle, Plus, CreditCard, Sparkles, BarChart3, Target, Crown } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 export default function VendorPromotions() {
@@ -29,11 +29,11 @@ export default function VendorPromotions() {
   }
 
   const vendorProducts = [
-    { id: 1, name: "Fresh Organic Tomatoes", price: 3.5, stock: 45, views: 234 },
-    { id: 2, name: "Organic Carrots", price: 2.8, stock: 12, views: 156 },
-    { id: 3, name: "Green Lettuce", price: 1.2, stock: 8, views: 89 },
-    { id: 4, name: "Red Apples", price: 4.2, stock: 67, views: 312 },
-    { id: 5, name: "Fresh Bread", price: 2.5, stock: 8, views: 145 },
+    { id: 1, name: "Fresh Organic Tomatoes", price: 14.0, stock: 45, views: 234 },
+    { id: 2, name: "Organic Carrots", price: 11.2, stock: 12, views: 156 },
+    { id: 3, name: "Green Lettuce", price: 4.8, stock: 8, views: 89 },
+    { id: 4, name: "Red Apples", price: 16.8, stock: 67, views: 312 },
+    { id: 5, name: "Fresh Bread", price: 10.0, stock: 8, views: 145 },
   ]
 
   const activePromotions: ProductPromotion[] = [
@@ -138,95 +138,116 @@ export default function VendorPromotions() {
   const [isExtendDialogOpen, setIsExtendDialogOpen] = useState(false)
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
-
-      <div className="container py-8">
+    <DashboardLayout>
+      <div className="space-y-8">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg">
-              <TrendingUp className="h-6 w-6 text-white" />
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center">
+          <div>
+            <div className="flex items-center gap-3 mb-4">
+              <Crown className="h-8 w-8 text-emerald-500" />
+              <h1 className="text-4xl font-bold text-gradient">Product Promotions</h1>
             </div>
-            <div>
-              <h1 className="text-3xl font-bold">Product Promotions</h1>
-              <p className="text-muted-foreground">Boost your product visibility and increase sales</p>
-            </div>
+            <p className="text-lg text-gray-600 max-w-2xl">
+              Boost your product visibility, increase sales, and reach more customers across Ghana
+            </p>
+          </div>
+          <div className="flex gap-4 mt-4 lg:mt-0">
+            <Button className="btn btn-primary">
+              <Plus className="mr-2 h-5 w-5" />
+              Start Promotion
+            </Button>
+            <Button className="btn btn-outline">
+              <BarChart3 className="mr-2 h-5 w-5" />
+              View Analytics
+            </Button>
           </div>
         </div>
 
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Promotions</CardTitle>
-              <Star className="h-4 w-4 text-yellow-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{promotionStats.totalPromotions}</div>
-              <p className="text-xs text-muted-foreground">All time</p>
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="card-interactive p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 bg-yellow-500 rounded-2xl flex items-center justify-center shadow-lg">
+                <Star className="h-6 w-6 text-white" />
+              </div>
+              <TrendingUp className="h-5 w-5 text-green-500" />
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-gray-600">Total Promotions</p>
+              <p className="text-3xl font-bold text-gray-900">{promotionStats.totalPromotions}</p>
+              <p className="text-sm font-medium text-gray-600">All time</p>
+            </div>
+          </div>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Promotions</CardTitle>
-              <Zap className="h-4 w-4 text-green-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{promotionStats.activePromotions}</div>
-              <p className="text-xs text-muted-foreground">Currently running</p>
-            </CardContent>
-          </Card>
+          <div className="card-interactive p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 bg-emerald-500 rounded-2xl flex items-center justify-center shadow-lg">
+                <Zap className="h-6 w-6 text-white" />
+              </div>
+              <TrendingUp className="h-5 w-5 text-green-500" />
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-gray-600">Active Promotions</p>
+              <p className="text-3xl font-bold text-gray-900">{promotionStats.activePromotions}</p>
+              <p className="text-sm font-medium text-green-600">Currently running</p>
+            </div>
+          </div>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Spent</CardTitle>
-              <DollarSign className="h-4 w-4 text-blue-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">${promotionStats.totalRevenue}</div>
-              <p className="text-xs text-muted-foreground">On promotions</p>
-            </CardContent>
-          </Card>
+          <div className="card-interactive p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 bg-blue-500 rounded-2xl flex items-center justify-center shadow-lg">
+                <DollarSign className="h-6 w-6 text-white" />
+              </div>
+              <TrendingUp className="h-5 w-5 text-green-500" />
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-gray-600">Total Spent</p>
+              <p className="text-3xl font-bold text-gray-900">₵{promotionStats.totalRevenue}</p>
+              <p className="text-sm font-medium text-gray-600">On promotions</p>
+            </div>
+          </div>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Average Boost</CardTitle>
-              <Eye className="h-4 w-4 text-purple-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">+{promotionStats.averageBoost}%</div>
-              <p className="text-xs text-muted-foreground">In product views</p>
-            </CardContent>
-          </Card>
+          <div className="card-interactive p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 bg-purple-500 rounded-2xl flex items-center justify-center shadow-lg">
+                <Eye className="h-6 w-6 text-white" />
+              </div>
+              <TrendingUp className="h-5 w-5 text-green-500" />
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-gray-600">Average Boost</p>
+              <p className="text-3xl font-bold text-gray-900">+{promotionStats.averageBoost}%</p>
+              <p className="text-sm font-medium text-green-600">In product views</p>
+            </div>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 mb-8">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
           {/* Promote New Product */}
-          <Card className="xl:col-span-2">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Plus className="h-5 w-5" />
+          <div className="xl:col-span-2 bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+            <div className="mb-6">
+              <h3 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+                <Target className="h-6 w-6 text-emerald-500" />
                 Promote a Product
-              </CardTitle>
-              <CardDescription>Select a product and choose a promotion plan to boost visibility</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
+              </h3>
+              <p className="text-gray-600 mt-2">Select a product and choose a promotion plan to boost visibility</p>
+            </div>
+
+            <div className="space-y-8">
               {/* Product Selection */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Select Product to Promote</label>
+              <div className="space-y-3">
+                <label className="form-label form-label-required">Select Product to Promote</label>
                 <Select value={selectedProduct} onValueChange={setSelectedProduct}>
-                  <SelectTrigger>
+                  <SelectTrigger className="form-select">
                     <SelectValue placeholder="Choose a product" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white border-gray-200 rounded-xl shadow-xl">
                     {vendorProducts.map((product) => (
-                      <SelectItem key={product.id} value={product.id.toString()}>
+                      <SelectItem key={product.id} value={product.id.toString()} className="rounded-lg hover:bg-emerald-50">
                         <div className="flex items-center justify-between w-full">
-                          <span>{product.name}</span>
-                          <span className="text-xs text-muted-foreground ml-2">
-                            ${product.price} • {product.views} views
+                          <span className="font-medium">{product.name}</span>
+                          <span className="text-xs text-emerald-600 ml-4">
+                            ₵{product.price} • {product.views} views
                           </span>
                         </div>
                       </SelectItem>
@@ -236,220 +257,212 @@ export default function VendorPromotions() {
               </div>
 
               {/* Promotion Plans */}
-              <div className="space-y-4">
-                <h4 className="font-medium">Choose Promotion Plan</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-6">
+                <h4 className="text-lg font-bold text-gray-900">Choose Promotion Plan</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {PROMOTION_PLANS.map((plan) => (
-                    <Card
+                    <div
                       key={plan.id}
-                      className={`cursor-pointer transition-all hover:shadow-md ${
-                        plan.popular ? "border-primary ring-2 ring-primary/20" : ""
+                      className={`card-interactive p-6 cursor-pointer hover:shadow-xl ${
+                        plan.popular ? "ring-2 ring-emerald-500 ring-offset-2" : ""
                       }`}
                       onClick={() => handlePromoteProduct(plan)}
                     >
-                      <CardContent className="p-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <h5 className="font-semibold">{plan.name}</h5>
-                          {plan.popular && (
-                            <Badge variant="default" className="bg-primary">
-                              Popular
-                            </Badge>
-                          )}
+                      <div className="flex items-center justify-between mb-4">
+                        <h5 className="text-lg font-bold text-gray-900">{plan.name}</h5>
+                        {plan.popular && (
+                          <span className="badge-featured">Popular</span>
+                        )}
+                      </div>
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-3xl font-bold text-emerald-600">₵{plan.price}</span>
+                          <span className="text-sm font-medium text-gray-600">{plan.duration} days</span>
                         </div>
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span className="text-2xl font-bold">₵{plan.price}</span>
-                            <span className="text-sm text-muted-foreground">{plan.duration} days</span>
-                          </div>
-                          {plan.discount && (
-                            <Badge variant="secondary" className="text-green-700 bg-green-100">
-                              {plan.discount}% OFF
-                            </Badge>
-                          )}
-                          <ul className="text-xs space-y-1 text-muted-foreground">
-                            {plan.features.slice(0, 3).map((feature, index) => (
-                              <li key={index} className="flex items-center gap-1">
-                                <CheckCircle className="h-3 w-3 text-green-500" />
-                                {feature}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </CardContent>
-                    </Card>
+                        {plan.discount && (
+                          <span className="badge-premium">{plan.discount}% OFF</span>
+                        )}
+                        <ul className="text-sm space-y-2">
+                          {plan.features.slice(0, 3).map((feature, index) => (
+                            <li key={index} className="flex items-center gap-2">
+                              <CheckCircle className="h-4 w-4 text-emerald-500 flex-shrink-0" />
+                              <span className="text-gray-700">{feature}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          {/* Quick Stats */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5" />
+          {/* Promotion Impact */}
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+            <div className="mb-6">
+              <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                <Sparkles className="h-6 w-6 text-emerald-500" />
                 Promotion Impact
-              </CardTitle>
-              <CardDescription>How promotions boost your products</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">Average View Increase</span>
-                  <span className="font-bold text-green-600">+340%</span>
+              </h3>
+              <p className="text-gray-600 mt-1">How promotions boost your products</p>
+            </div>
+
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 bg-emerald-50 rounded-xl">
+                  <span className="font-medium text-gray-700">Average View Increase</span>
+                  <span className="text-xl font-bold text-emerald-600">+340%</span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">Sales Conversion</span>
-                  <span className="font-bold text-blue-600">+125%</span>
+                <div className="flex items-center justify-between p-4 bg-blue-50 rounded-xl">
+                  <span className="font-medium text-gray-700">Sales Conversion</span>
+                  <span className="text-xl font-bold text-blue-600">+125%</span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">Search Ranking</span>
-                  <span className="font-bold text-purple-600">Top 3</span>
+                <div className="flex items-center justify-between p-4 bg-purple-50 rounded-xl">
+                  <span className="font-medium text-gray-700">Search Ranking</span>
+                  <span className="text-xl font-bold text-purple-600">Top 3</span>
                 </div>
               </div>
 
-              <div className="pt-4 border-t">
-                <h5 className="font-medium mb-2">Benefits of Promotion</h5>
-                <ul className="text-sm space-y-1 text-muted-foreground">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="h-3 w-3 text-green-500" />
-                    Top search placement
+              <div className="pt-6 border-t border-gray-200">
+                <h5 className="font-bold text-gray-900 mb-4">Benefits of Promotion</h5>
+                <ul className="space-y-3">
+                  <li className="flex items-center gap-3">
+                    <CheckCircle className="h-5 w-5 text-emerald-500 flex-shrink-0" />
+                    <span className="text-gray-700">Top search placement</span>
                   </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="h-3 w-3 text-green-500" />
-                    Promoted badge visibility
+                  <li className="flex items-center gap-3">
+                    <CheckCircle className="h-5 w-5 text-emerald-500 flex-shrink-0" />
+                    <span className="text-gray-700">Promoted badge visibility</span>
                   </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="h-3 w-3 text-green-500" />
-                    Increased buyer engagement
+                  <li className="flex items-center gap-3">
+                    <CheckCircle className="h-5 w-5 text-emerald-500 flex-shrink-0" />
+                    <span className="text-gray-700">Increased buyer engagement</span>
                   </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="h-3 w-3 text-green-500" />
-                    Higher conversion rates
+                  <li className="flex items-center gap-3">
+                    <CheckCircle className="h-5 w-5 text-emerald-500 flex-shrink-0" />
+                    <span className="text-gray-700">Higher conversion rates</span>
                   </li>
                 </ul>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
 
         {/* Active Promotions */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Clock className="h-5 w-5" />
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+          <div className="mb-6">
+            <h3 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+              <Clock className="h-6 w-6 text-emerald-500" />
               Active Promotions
-            </CardTitle>
-            <CardDescription>Monitor your currently running promotions</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {activePromotions.length === 0 ? (
-              <div className="text-center py-8">
-                <Zap className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">No Active Promotions</h3>
-                <p className="text-muted-foreground">Start promoting your products to increase visibility and sales</p>
+            </h3>
+            <p className="text-gray-600 mt-2">Monitor your currently running promotions</p>
+          </div>
+
+          {activePromotions.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Zap className="h-8 w-8 text-gray-400" />
               </div>
-            ) : (
-              <div className="space-y-4">
-                {activePromotions.map((promotion) => {
-                  const remainingDays = getRemainingDays(promotion.endDate)
-                  const progress = getProgressPercentage(promotion.startDate, promotion.endDate)
+              <h3 className="text-xl font-bold text-gray-900 mb-3">No Active Promotions</h3>
+              <p className="text-gray-600 max-w-md mx-auto">Start promoting your products to increase visibility and sales across Ghana's markets</p>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {activePromotions.map((promotion) => {
+                const remainingDays = getRemainingDays(promotion.endDate)
+                const progress = getProgressPercentage(promotion.startDate, promotion.endDate)
 
-                  return (
-                    <Card key={promotion.id} className="border">
-                      <CardContent className="p-4">
-                        <div className="flex items-center justify-between mb-3">
-                          <div>
-                            <h4 className="font-semibold">{getProductName(promotion.productId)}</h4>
-                            <p className="text-sm text-muted-foreground">{getPlanName(promotion.planId)}</p>
-                          </div>
-                          <div className="text-right">
-                            <Badge variant="default" className="bg-green-100 text-green-800 mb-1">
-                              Active
-                            </Badge>
-                            <p className="text-sm font-medium">${promotion.totalCost}</p>
-                          </div>
-                        </div>
+                return (
+                  <div key={promotion.id} className="card p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <h4 className="text-lg font-bold text-gray-900">{getProductName(promotion.productId)}</h4>
+                        <p className="text-emerald-600 font-medium">{getPlanName(promotion.planId)}</p>
+                      </div>
+                      <div className="text-right">
+                        <span className="badge-active mb-2 block">Active</span>
+                        <p className="text-lg font-bold text-gray-900">₵{promotion.totalCost}</p>
+                      </div>
+                    </div>
 
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="text-muted-foreground">Progress</span>
-                            <span className="font-medium">{remainingDays} days remaining</span>
-                          </div>
-                          <Progress value={progress} className="h-2" />
-                          <div className="flex items-center justify-between text-xs text-muted-foreground">
-                            <span>Started: {promotion.startDate.toLocaleDateString()}</span>
-                            <span>Ends: {promotion.endDate.toLocaleDateString()}</span>
-                          </div>
-                        </div>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="font-medium text-gray-700">Progress</span>
+                        <span className="font-bold text-emerald-600">{remainingDays} days remaining</span>
+                      </div>
+                      <Progress value={progress} className="h-3 bg-gray-200" />
+                      <div className="flex items-center justify-between text-sm text-gray-500">
+                        <span>Started: {promotion.startDate.toLocaleDateString()}</span>
+                        <span>Ends: {promotion.endDate.toLocaleDateString()}</span>
+                      </div>
+                    </div>
 
-                        <div className="flex gap-2 mt-4">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="bg-transparent"
-                            onClick={() => handleViewAnalytics(promotion.id, promotion.productId)}
-                          >
-                            <Eye className="mr-2 h-3 w-3" />
-                            View Analytics
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="bg-transparent"
-                            onClick={() => handleExtendPromotion(promotion)}
-                          >
-                            <Calendar className="mr-2 h-3 w-3" />
-                            Extend
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )
-                })}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                    <div className="flex gap-3 mt-6">
+                      <Button
+                        onClick={() => handleViewAnalytics(promotion.id, promotion.productId)}
+                        className="btn btn-outline btn-sm"
+                      >
+                        <Eye className="mr-2 h-4 w-4" />
+                        View Analytics
+                      </Button>
+                      <Button
+                        onClick={() => handleExtendPromotion(promotion)}
+                        className="btn btn-primary btn-sm"
+                      >
+                        <Calendar className="mr-2 h-4 w-4" />
+                        Extend
+                      </Button>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
 
         {/* Extend Promotion Dialog */}
         <Dialog open={isExtendDialogOpen} onOpenChange={setIsExtendDialogOpen}>
-          <DialogContent className="sm:max-w-md">
+          <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle>Extend Promotion</DialogTitle>
+              <DialogTitle className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
+                  <Calendar className="h-5 w-5 text-emerald-600" />
+                </div>
+                Extend Promotion
+              </DialogTitle>
               <DialogDescription>
                 Extend the promotion for {selectedPromotion ? getProductName(selectedPromotion.productId) : ""}
               </DialogDescription>
             </DialogHeader>
             {selectedPromotion && (
-              <div className="space-y-4">
-                <div className="p-4 border rounded-lg bg-muted/50">
-                  <h4 className="font-semibold mb-2">Current Plan: {getPlanName(selectedPromotion.planId)}</h4>
-                  <div className="space-y-1 text-sm">
+              <div className="space-y-6">
+                <div className="bg-emerald-50 p-4 rounded-xl border border-emerald-200">
+                  <h4 className="font-bold text-emerald-900 mb-3">Current Plan: {getPlanName(selectedPromotion.planId)}</h4>
+                  <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span>Expires:</span>
-                      <span>{selectedPromotion.endDate.toLocaleDateString()}</span>
+                      <span className="text-emerald-700">Expires:</span>
+                      <span className="font-medium text-emerald-900">{selectedPromotion.endDate.toLocaleDateString()}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Days Remaining:</span>
-                      <span>{getRemainingDays(selectedPromotion.endDate)} days</span>
+                      <span className="text-emerald-700">Days Remaining:</span>
+                      <span className="font-medium text-emerald-900">{getRemainingDays(selectedPromotion.endDate)} days</span>
                     </div>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-3">
                   {PROMOTION_PLANS.slice(0, 4).map((plan) => (
                     <Button
                       key={plan.id}
-                      variant="outline"
-                      className="h-auto p-3 flex flex-col gap-1 bg-transparent"
                       onClick={() => {
                         setSelectedPlan(plan)
                         setIsExtendDialogOpen(false)
                         setIsPaymentDialogOpen(true)
                       }}
+                      className="btn btn-outline h-auto p-4 flex flex-col gap-2"
                     >
-                      <span className="font-semibold">{plan.name}</span>
-                      <span className="text-sm">₵{plan.price}</span>
+                      <span className="font-bold">{plan.name}</span>
+                      <span className="text-sm font-medium text-emerald-600">₵{plan.price}</span>
                     </Button>
                   ))}
                 </div>
@@ -460,60 +473,71 @@ export default function VendorPromotions() {
 
         {/* Payment Dialog */}
         <Dialog open={isPaymentDialogOpen} onOpenChange={setIsPaymentDialogOpen}>
-          <DialogContent className="sm:max-w-md">
+          <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle>Complete Payment</DialogTitle>
+              <DialogTitle className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
+                  <CreditCard className="h-5 w-5 text-emerald-600" />
+                </div>
+                Complete Payment
+              </DialogTitle>
               <DialogDescription>Confirm your promotion plan and complete the payment</DialogDescription>
             </DialogHeader>
 
             {selectedPlan && (
-              <div className="space-y-4">
-                <div className="p-4 border rounded-lg bg-muted/50">
-                  <h4 className="font-semibold mb-2">{selectedPlan.name}</h4>
-                  <div className="space-y-1 text-sm">
+              <div className="space-y-6">
+                <div className="bg-emerald-50 p-6 rounded-xl border border-emerald-200">
+                  <h4 className="text-xl font-bold text-emerald-900 mb-4">{selectedPlan.name}</h4>
+                  <div className="space-y-3 text-sm">
                     <div className="flex justify-between">
-                      <span>Duration:</span>
-                      <span>{selectedPlan.duration} days</span>
+                      <span className="text-emerald-700">Duration:</span>
+                      <span className="font-bold text-emerald-900">{selectedPlan.duration} days</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Price:</span>
-                      <span className="font-bold">${selectedPlan.price}</span>
+                      <span className="text-emerald-700">Price:</span>
+                      <span className="text-2xl font-bold text-emerald-600">₵{selectedPlan.price}</span>
                     </div>
                     {selectedPlan.discount && (
-                      <div className="flex justify-between text-green-600">
-                        <span>Discount:</span>
-                        <span>{selectedPlan.discount}% OFF</span>
+                      <div className="flex justify-between">
+                        <span className="text-emerald-700">Discount:</span>
+                        <span className="font-bold text-orange-600">{selectedPlan.discount}% OFF</span>
                       </div>
                     )}
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <h5 className="font-medium">Features Included:</h5>
-                  <ul className="text-sm space-y-1">
+                <div className="space-y-3">
+                  <h5 className="font-bold text-gray-900">Features Included:</h5>
+                  <ul className="space-y-2">
                     {selectedPlan.features.map((feature, index) => (
-                      <li key={index} className="flex items-center gap-2">
-                        <CheckCircle className="h-3 w-3 text-green-500" />
-                        {feature}
+                      <li key={index} className="flex items-center gap-3">
+                        <CheckCircle className="h-4 w-4 text-emerald-500 flex-shrink-0" />
+                        <span className="text-gray-700">{feature}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
-
-                <div className="flex gap-2 pt-4">
-                  <Button onClick={handlePayment} className="flex-1">
-                    <CreditCard className="mr-2 h-4 w-4" />
-                    Pay ${selectedPlan.price}
-                  </Button>
-                  <Button variant="outline" onClick={() => setIsPaymentDialogOpen(false)}>
-                    Cancel
-                  </Button>
-                </div>
               </div>
             )}
+
+            <DialogFooter className="gap-3">
+              <Button 
+                onClick={() => setIsPaymentDialogOpen(false)}
+                className="btn btn-outline"
+              >
+                Cancel
+              </Button>
+              <Button 
+                onClick={handlePayment} 
+                className="btn btn-primary"
+              >
+                <CreditCard className="mr-2 h-4 w-4" />
+                Pay ₵{selectedPlan?.price}
+              </Button>
+            </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
-    </div>
+    </DashboardLayout>
   )
 }
