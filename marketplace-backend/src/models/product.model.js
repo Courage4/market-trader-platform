@@ -8,11 +8,13 @@ const productSchema = new mongoose.Schema({
     },
     slug: {
         type: String,
-        unique: true
+        unique: true,
+        sparse: true
     },
     sku: {
         type: String,
-        unique: true
+        unique: true,
+        sparse: true
     },
     description: {
         type: String,
@@ -178,6 +180,33 @@ const productSchema = new mongoose.Schema({
     }
 }, {
     timestamps: true
+});
+
+// Pre-save middleware to auto-generate slug and SKU if not provided
+productSchema.pre('save', function(next) {
+    // Always generate slug if not provided or empty
+    if (!this.slug && this.name) {
+        // Generate slug from name
+        this.slug = this.name
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/(^-|-$)/g, '');
+        
+        // Add timestamp to ensure uniqueness
+        this.slug += '-' + Date.now();
+    }
+    
+    // Always generate SKU if not provided or empty
+    if (!this.sku && this.name) {
+        // Generate SKU from name and timestamp
+        const skuPrefix = this.name
+            .toUpperCase()
+            .replace(/[^A-Z0-9]/g, '')
+            .substring(0, 6);
+        this.sku = skuPrefix + '-' + Date.now();
+    }
+    
+    next();
 });
 
 module.exports = mongoose.model('Product', productSchema);

@@ -1,0 +1,500 @@
+components:
+  schemas:
+    # Vendor Analytics Schemas
+    ProductStats:
+      type: object
+      properties:
+        total:
+          type: integer
+          description: Total number of products
+          example: 24
+        active:
+          type: integer
+          description: Number of active/published products
+          example: 20
+        draft:
+          type: integer
+          description: Number of draft products
+          example: 3
+        lowStock:
+          type: integer
+          description: Number of products with low stock (≤10)
+          example: 2
+        outOfStock:
+          type: integer
+          description: Number of out of stock products
+          example: 1
+        addedThisMonth:
+          type: integer
+          description: Number of products added this month
+          example: 5
+
+    OrderStats:
+      type: object
+      properties:
+        total:
+          type: integer
+          description: Total number of orders
+          example: 156
+        pending:
+          type: integer
+          description: Number of pending orders
+          example: 12
+        completed:
+          type: integer
+          description: Number of completed orders
+          example: 140
+        cancelled:
+          type: integer
+          description: Number of cancelled orders
+          example: 4
+        thisMonth:
+          type: integer
+          description: Number of orders this month
+          example: 23
+
+    RevenueStats:
+      type: object
+      properties:
+        totalRevenue:
+          type: number
+          format: float
+          description: Total revenue from completed orders
+          example: 12960.50
+        averageOrderValue:
+          type: number
+          format: float
+          description: Average order value
+          example: 85.40
+        monthlyRevenue:
+          type: number
+          format: float
+          description: Revenue for current month
+          example: 2340.75
+        monthlyBreakdown:
+          type: array
+          items:
+            $ref: '#/components/schemas/MonthlyRevenue'
+
+    MonthlyRevenue:
+      type: object
+      properties:
+        _id:
+          type: object
+          properties:
+            year:
+              type: integer
+              example: 2024
+            month:
+              type: integer
+              example: 3
+        revenue:
+          type: number
+          format: float
+          example: 1250.30
+        orderCount:
+          type: integer
+          example: 15
+
+    PerformanceMetrics:
+      type: object
+      properties:
+        conversionRate:
+          type: number
+          format: float
+          description: Conversion rate percentage
+          example: 3.25
+        averageRating:
+          type: number
+          format: float
+          description: Average product rating
+          example: 4.8
+        totalReviews:
+          type: integer
+          description: Total number of reviews
+          example: 128
+        topProducts:
+          type: array
+          items:
+            $ref: '#/components/schemas/TopProduct'
+
+    TopProduct:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "64f8a1b2c3d4e5f6a7b8c9d3"
+        name:
+          type: string
+          example: "Organic Tomatoes"
+        views:
+          type: integer
+          example: 245
+        rating:
+          type: number
+          format: float
+          example: 4.5
+        salesCount:
+          type: integer
+          example: 89
+
+    SalesData:
+      type: object
+      properties:
+        _id:
+          type: object
+          description: Grouping identifier based on groupBy parameter
+          properties:
+            year:
+              type: integer
+              example: 2024
+            month:
+              type: integer
+              example: 3
+            day:
+              type: integer
+              example: 15
+        totalSales:
+          type: number
+          format: float
+          example: 1250.30
+        orderCount:
+          type: integer
+          example: 15
+        averageOrderValue:
+          type: number
+          format: float
+          example: 83.35
+
+    ProductPerformance:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: Product ID
+          example: "64f8a1b2c3d4e5f6a7b8c9d3"
+        productName:
+          type: string
+          example: "Organic Tomatoes"
+        totalSales:
+          type: number
+          format: float
+          example: 450.75
+        quantitySold:
+          type: integer
+          example: 25
+
+    # Existing schemas (referenced from other files)
+    Product:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "64f8a1b2c3d4e5f6a7b8c9d3"
+        name:
+          type: string
+          example: "Organic Tomatoes"
+        price:
+          type: number
+          format: float
+          example: 15.50
+        status:
+          type: string
+          enum: [draft, published, archived]
+          example: "published"
+        stock:
+          type: integer
+          example: 50
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-03-15T10:30:00Z"
+
+    Order:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "64f8a1b2c3d4e5f6a7b8c9d3"
+        orderNumber:
+          type: string
+          example: "ORD-2024-001"
+        totalPrice:
+          type: number
+          format: float
+          example: 85.50
+        status:
+          type: string
+          enum: [pending, processing, shipped, delivered, cancelled]
+          example: "completed"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-03-15T10:30:00Z"
+
+    ProductsResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            products:
+              type: array
+              items:
+                $ref: '#/components/schemas/Product'
+            pagination:
+              $ref: '#/components/schemas/Pagination'
+
+    OrdersResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            orders:
+              type: array
+              items:
+                $ref: '#/components/schemas/Order'
+            pagination:
+              $ref: '#/components/schemas/Pagination'
+
+    Pagination:
+      type: object
+      properties:
+        currentPage:
+          type: integer
+          example: 1
+        totalPages:
+          type: integer
+          example: 5
+        totalItems:
+          type: integer
+          example: 50
+        itemsPerPage:
+          type: integer
+          example: 10
+
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "64f8a1b2c3d4e5f6a7b8c9d3"
+        name:
+          type: string
+          example: "John Doe"
+        email:
+          type: string
+          format: email
+          example: "john@example.com"
+        role:
+          type: string
+          enum: [buyer, vendor, admin, super_admin]
+          example: "vendor"
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: "Error message"
+
+    # Buyer-specific schemas
+    BuyerOrderStats:
+      type: object
+      properties:
+        total:
+          type: integer
+          description: Total number of orders
+          example: 25
+        pending:
+          type: integer
+          description: Number of pending orders
+          example: 3
+        completed:
+          type: integer
+          description: Number of completed orders
+          example: 20
+        cancelled:
+          type: integer
+          description: Number of cancelled orders
+          example: 2
+        thisMonth:
+          type: integer
+          description: Number of orders this month
+          example: 5
+
+    FavoriteStats:
+      type: object
+      properties:
+        products:
+          type: integer
+          description: Number of favorite products
+          example: 15
+        vendors:
+          type: integer
+          description: Number of favorite vendors
+          example: 8
+        total:
+          type: integer
+          description: Total favorites
+          example: 23
+
+    CartStats:
+      type: object
+      properties:
+        totalItems:
+          type: integer
+          description: Total items in cart
+          example: 12
+        totalValue:
+          type: number
+          format: float
+          description: Total cart value
+          example: 245.50
+        uniqueProducts:
+          type: integer
+          description: Number of unique products
+          example: 8
+
+    SpendingAnalytics:
+      type: object
+      properties:
+        totalSpent:
+          type: number
+          format: float
+          description: Total amount spent
+          example: 1250.75
+        monthlySpent:
+          type: number
+          format: float
+          description: Amount spent this month
+          example: 180.25
+        monthlyBreakdown:
+          type: array
+          items:
+            $ref: '#/components/schemas/MonthlySpending'
+
+    MonthlySpending:
+      type: object
+      properties:
+        _id:
+          type: object
+          properties:
+            year:
+              type: integer
+              example: 2024
+            month:
+              type: integer
+              example: 3
+        totalSpent:
+          type: number
+          format: float
+          example: 180.25
+        orderCount:
+          type: integer
+          example: 4
+
+    Cart:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "64f8a1b2c3d4e5f6a7b8c9d3"
+        user:
+          type: string
+          example: "64f8a1b2c3d4e5f6a7b8c9d3"
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItem'
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-03-15T10:30:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2024-03-15T10:30:00Z"
+
+    CartItem:
+      type: object
+      properties:
+        product:
+          $ref: '#/components/schemas/Product'
+        quantity:
+          type: integer
+          example: 2
+
+    # Role Switching Schemas
+    RoleSwitchResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Successfully switched from vendor to buyer"
+        data:
+          type: object
+          properties:
+            user:
+              $ref: '#/components/schemas/User'
+            token:
+              type: string
+              description: New JWT token with updated role
+              example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            roleSwitch:
+              type: object
+              properties:
+                from:
+                  type: string
+                  example: "vendor"
+                to:
+                  type: string
+                  example: "buyer"
+                timestamp:
+                  type: string
+                  format: date-time
+                  example: "2024-03-15T10:30:00Z"
+
+    AvailableRoles:
+      type: object
+      properties:
+        currentRole:
+          type: string
+          example: "vendor"
+        availableRoles:
+          type: array
+          items:
+            type: string
+          example: ["buyer", "vendor"]
+        canSwitch:
+          type: boolean
+          example: true
+
+    RoleAccessCheck:
+      type: object
+      properties:
+        canAccess:
+          type: boolean
+          example: true
+        currentRole:
+          type: string
+          example: "vendor"
+        targetRole:
+          type: string
+          example: "buyer"
+        message:
+          type: string
+          example: "Access granted"

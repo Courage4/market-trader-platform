@@ -22,8 +22,8 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['user', 'vendor', 'admin'],
-        default: 'user'
+        enum: ['buyer', 'vendor', 'admin', 'super_admin'],
+        default: 'buyer'
     },
     avatar: {
         type: String,
@@ -82,7 +82,15 @@ const userSchema = new mongoose.Schema({
         },
         language: { type: String, default: 'en' },
         currency: { type: String, default: 'USD' }
-    }
+    },
+    favorites: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product'
+    }],
+    favoriteVendors: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }]
 }, {
     timestamps: true
 });
